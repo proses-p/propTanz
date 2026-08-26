@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Actions\Hostel\StoreHostelAction;
+//use App\Enums\HostelStatus;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreHostelRequest;
+use App\Http\Requests\UpdateHostelRequest;
+use App\Http\Resources\HostelResource;
+use App\Models\Hostel;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
+class HostelController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    use ApiResponse;
+
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(Hostel::class, 'hostel');
+    // }
+
+    public function index(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', Hostel::class);
+
+        $hostels = Hostel::query()
+            // ->when($request->user()?->isLandlord() && ! $request->user()?->isAdmin(), function ($query) use ($request) {
+            //     $query->where('landlord_id', $request->user()->id);
+            // })
+            ->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hostel retrieved successfull.',
+            'data' => $hostels->through(function ($hostel) {
+                return new HostelResource($hostel);
+            }),
+        ]);
+
+        /*return $this->successResponse(
+            //$hostels,
+            HostelResource::collection($hostels),
+            'Hostels retrieved successfull.'
+        );
+        */
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreHostelRequest $request,
+        StoreHostelAction $storeHostelAction): JsonResponse
+    {
+        Gate::authorize('create', Hostel::class);
+
+        $hostel = $storeHostelAction->execute(
+            $request->user(),
+            $request->validated()
+        );
+
+        return $this->successResponse(
+            new HostelResource($hostel),
+            'Hostel created successfull.', 201
+        );
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Hostel $hostel): JsonResponse
+    {
+        Gate::authorize('view', $hostel);
+
+        return $this->successResponse(
+            new HostelResource($hostel),
+            'Hostel retrieved successfull.'
+        );
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateHostelRequest $request, Hostel $hostel): JsonResponse
+    {
+        Gate::authorize('update', $hostel);
+
+        $hostel->update($request->validated());
+        return $this->successResponse(
+            new HostelResource($hostel->fresh()),
+            'Hostel updated successfull.'
+        );
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Hostel $hostel): JsonResponse
+    {
+        Gate::authorize('delete', $hostel);
+
+        $hostel->delete();
+        return $this->successResponse(
+            null,
+            'Hostel deleted successfull.'
+        );
+    }
+
+    public function statistics(Request $request): JsonResponse
+    {
+        Gate::forUser($request->user())->authorize('viewStatistics', Hostel::class);
+
+        $statistics = [
+            'total' => Hostel::count(),
+            'approved' => Hostel::where('status', 'approved')->count(),
+            'pending' => Hostel::where('status', 'pending')->count(),
+            'rejected' => Hostel::where('status', 'rejected')->count(),
+        ];
+        return $this->successResponse($statistics,
+
+         'Statistics retrieved successfully.');
+    }
+
+    public function browse(Request $request): JsonResponse {
+        $hostels = Hostel::query()
+            ->where('status', 'approved')
+            ->latest()
+            ->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Approved hostels retrieved successfull!.',
+            'data' => $hostels->through(function ($hostel) {
+                return new HostelResource($hostel);
+            }),
+        ]);
+    }
+}
