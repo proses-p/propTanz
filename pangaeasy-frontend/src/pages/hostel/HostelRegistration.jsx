@@ -71,7 +71,11 @@ export default function HostelRegistration() {
 
     const loadStatistics = async () => {
         try {
+            console.log("REQUESTING STATISTICS...");
             const response = await hostelService.statistics();
+            console.log("FULL STATISTICS RESPONSE:", response);
+            console.log("RESPONSE DATA:", response.data);
+            console.log("STATISTICS:", response.data.data);
 
             setStatistics(response.data.data);
         } catch (error) {

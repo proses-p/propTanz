@@ -28,4 +28,8 @@ class Hostel extends Model
     {
         return $this->belongsTo(User::class, 'landlord_id');
     }
+
+    public function images() {
+        return $this->hasMany(HostelImage::class);
+    }
 }

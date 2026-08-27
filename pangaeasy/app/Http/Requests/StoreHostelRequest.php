@@ -75,6 +75,19 @@ class StoreHostelRequest extends FormRequest
                 'max:255',
             ],
 
+            'images' => [
+                'required',
+                'array',
+                'min:1',
+                'max:10',
+            ],
+
+            'images.*' => [
+                'image',
+                'mimes:jpeg,jgp,png,webp',
+                'max:5120',
+            ]
+
         ];
     }
 }

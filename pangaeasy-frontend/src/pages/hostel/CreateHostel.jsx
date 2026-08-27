@@ -1,20 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import hostelService from "../../services/hostelService";
 
 export default function CreateHostel() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         hostel_name: "",
-        landlord_name: "",
-        location: "",
-        price: "",
+        description: "",
+        region: "",
+        district: "",
+        ward: "",
+        street: "",
+        landmark: "",
         hostel_type: "",
-        status: "pending",
+       
     });
 
     const [images, setImages] = useState([]);
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,9 +48,30 @@ export default function CreateHostel() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (images.length === 0) {
+            toast.error("Please upload at least one hostel image.");
+            return;
+        }
+
         try {
             // Backend connection and image upload
             // tutafanya hatua inayofuata
+            setSubmitting(true);
+            const data = new FormData;
+            data.append("hostel_name", formData.hostel_name);
+            data.append("description", formData.description);
+            data.append("region", formData.region);
+            data.append("district", formData.district);
+            data.append("ward", formData.ward);
+            data.append("street", formData.street);
+            data.append("landmark", formData.landmark);
+            data.append("hostel_type", formData.hostel_type);
+            
+            images.forEach((image) => {
+                data.append("images[]", image);
+            });
+
+            await hostelService.create(data);
 
             console.log("HOSTEL DATA:", formData);
             console.log("HOSTEL IMAGES:", images);
@@ -56,7 +82,19 @@ export default function CreateHostel() {
             navigate("/hostel-registration");
         } catch (error) {
             console.error(error);
-            toast.error("Failed to register hostel.");
+
+            const response = error.response?.data;
+            if (response?.errors) {
+                const firstError = Object.values(
+                    response.errors
+                )[0]?.[0];
+                toast.error(firstError || "Please check your information.");
+            } else {
+                toast.error(response?.message || "Failed to register hostel");
+            }
+            
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -110,35 +148,95 @@ export default function CreateHostel() {
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium">
-                                    Landlord Name
+                                    Region
                                 </label>
 
                                 <input
                                     type="text"
-                                    name="landlord_name"
-                                    value={formData.landlord_name}
+                                    name="region"
+                                    value={formData.region}
                                     onChange={handleChange}
-                                    placeholder="Enter landlord name"
+                                    placeholder="Enter region"
                                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium">
-                                    Location
+                                    District
                                 </label>
 
                                 <input
                                     type="text"
-                                    name="location"
-                                    value={formData.location}
+                                    name="district"
+                                    value={formData.district}
                                     onChange={handleChange}
-                                    placeholder="Enter hostel location"
+                                    placeholder="Enter district"
                                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
 
                             <div>
+                                <label className="mb-2 block text-sm font-medium">
+                                    ward
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="ward"
+                                    value={formData.ward}
+                                    onChange={handleChange}
+                                    placeholder="Enter ward"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium">
+                                    Street
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="street"
+                                    value={formData.street}
+                                    onChange={handleChange}
+                                    placeholder="Enter street"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium">
+                                    Landmark
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="landmark"
+                                    value={formData.landmark}
+                                    onChange={handleChange}
+                                    placeholder="Near by school building - (Optional)"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium">
+                                    description
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    placeholder="describe your hostel..."
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </div>
+
+                            {/* <div>
                                 <label className="mb-2 block text-sm font-medium">
                                     Price
                                 </label>
@@ -151,7 +249,7 @@ export default function CreateHostel() {
                                     placeholder="Enter price"
                                     className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                                 />
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label className="mb-2 block text-sm font-medium">
@@ -168,15 +266,15 @@ export default function CreateHostel() {
                                         Select hostel type
                                     </option>
 
-                                    <option value="male">
+                                    <option value="Boys">
                                         Male
                                     </option>
 
-                                    <option value="female">
+                                    <option value="Girls">
                                         Female
                                     </option>
 
-                                    <option value="mixed">
+                                    <option value="Mixed">
                                         Mixed
                                     </option>
                                 </select>
@@ -191,7 +289,7 @@ export default function CreateHostel() {
                         </h2>
 
                         <p className="mt-1 text-sm text-gray-500">
-                            You can upload multiple images of your hostel.
+                            Upload one or more images of your hostel (maximum 10 images).
                         </p>
 
                         <div className="mt-5">
@@ -235,6 +333,7 @@ export default function CreateHostel() {
                         <button
                             type="button"
                             onClick={() => navigate("/hostel-registration")}
+                            disabled={submitting}
                             className="rounded-lg border border-gray-300 px-6 py-3 font-medium hover:bg-gray-50"
                         >
                             Cancel
@@ -242,9 +341,13 @@ export default function CreateHostel() {
 
                         <button
                             type="submit"
+                            disabled={submitting}
                             className="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
                         >
-                            Register Hostel
+                            {submitting
+                                ? "Registering....."
+                                : "Register Hostel"
+                            }
                         </button>
                     </div>
                 </form>

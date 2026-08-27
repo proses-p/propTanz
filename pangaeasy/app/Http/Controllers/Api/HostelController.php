@@ -114,13 +114,21 @@ class HostelController extends Controller
 
     public function statistics(Request $request): JsonResponse
     {
-        Gate::forUser($request->user())->authorize('viewStatistics', Hostel::class);
+        //Gate::forUser($request->user())->authorize('viewStatistics', Hostel::class);
+        $user = $request->user();
+        $query = Hostel::query();
+
+        // admin able to see all hostels
+        if (!$user->isAdmin()) {
+            $query->where('landlord_id', $user->id);
+        }
 
         $statistics = [
-            'total' => Hostel::count(),
-            'approved' => Hostel::where('status', 'approved')->count(),
-            'pending' => Hostel::where('status', 'pending')->count(),
-            'rejected' => Hostel::where('status', 'rejected')->count(),
+            'total' => (clone $query)->count(),
+            'approved' => (clone $query)->where('status', 'approved')->count(),
+            'pending' => (clone $query)->where('status', 'pending')->count(),
+            'rejected' => (clone $query)->where('status', 'rejected')->count(),
+
         ];
         return $this->successResponse($statistics,
 
