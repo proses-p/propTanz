@@ -25,7 +25,7 @@ class HostelPolicy
 
     public function viewStatistics(User $user): bool
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**

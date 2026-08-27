@@ -19,7 +19,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
 
         Route::middleware('role:ADMIN')->group(function () {
-            Route::get('/hostels/statistics', [HostelController::class, 'statistics']);
+
             Route::get('/owner-request', [OwnerRequestController::class, 'index']);
             Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
@@ -27,11 +27,13 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('role:ADMIN,USER')->group(function () {
             Route::get('/hostels', [HostelController::class, 'index']);
+            Route::get('/hostels/statistics', [HostelController::class, 'statistics']);
             Route::get('/hostels/{hostel}', [HostelController::class, 'show']);
             Route::post('/hostels', [HostelController::class, 'store']);
             Route::put('/hostels/{hostel}', [HostelController::class, 'update']);
             Route::patch('/hostels/{hostel}', [HostelController::class, 'update']);
             Route::delete('/hostels/{hostel}', [HostelController::class, 'destroy']);
+
         });
 
         Route::middleware('role:USER')->group(function () {
