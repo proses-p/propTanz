@@ -13,6 +13,7 @@ import OwnerVerification from "./pages/user/OwnerVerification";
 import OwnerRequests from "./pages/hostel/OwnerRequests";
 import HostelRegistration from "./pages/hostel/HostelRegistration";
 import CreateHostel from "./pages/hostel/CreateHostel";
+import AdminHostelDetails from "./pages/hostel/AdminHostelDetails";
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ function App() {
           <Route path="/admin/owner-request" element={<ProtectedRoute roles={[ROLE_ADMIN]}><OwnerRequests/></ProtectedRoute>}/>
           <Route path="/hostel-registration" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><HostelRegistration/></ProtectedRoute>}/>
           <Route path="/hostel-registration/create" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><CreateHostel/></ProtectedRoute>} />
+          <Route path="/admin/hostels/:id" element={<ProtectedRoute roles={[ROLE_ADMIN]}><AdminHostelDetails/></ProtectedRoute>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

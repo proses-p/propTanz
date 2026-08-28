@@ -21,6 +21,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('role:ADMIN')->group(function () {
 
             Route::get('/owner-request', [OwnerRequestController::class, 'index']);
+            Route::patch('/hostels/{hostels}/approving', [HostelController::class, 'approving']);
+            Route::patch('/hostels/{hostels}/rejecting', [HostelController::class, 'rejecting']);
             Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
         });
