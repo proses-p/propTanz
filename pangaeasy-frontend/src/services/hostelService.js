@@ -27,6 +27,13 @@ const hostelService = {
 
     browse(page = 1) {
         return api.get(`/browse/hostels?page=${page}`);
+    },
+    approving(id) {
+        return api.patch(`/hostels/${id}/approving`);
+    },
+
+    rejecting(id, data) {
+        return api.patch(`/hostels/${id}/reject`, data);
     }
 };
 

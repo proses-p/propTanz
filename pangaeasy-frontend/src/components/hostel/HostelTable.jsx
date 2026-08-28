@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
 export default function HostelTable({ 
@@ -5,6 +6,7 @@ export default function HostelTable({
     onEdit,
     onDelete,
 }) {
+    const navigate = useNavigate();
     return (
         <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
             <table className="min-w-full">
@@ -28,6 +30,12 @@ export default function HostelTable({
                             <td className="px-4 py-3">{hostel.hostel_type}</td>
                             <td className="px-4 py-3"><StatusBadge status={hostel.status} /></td>
                             <td className="px-4 py-3 text-center">
+                                <button
+                                    onClick={() => navigate(`/admin/hostels/${hostel.id}`)}
+                                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                                >
+                                    View
+                                </button>
                                 <button
                                     onClick={() => onEdit(hostel)}
                                     className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
