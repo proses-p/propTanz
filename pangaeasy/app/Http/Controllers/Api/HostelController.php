@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Hostel\StoreHostelAction;
-//use App\Enums\HostelStatus;
+use App\Enums\HostelStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHostelRequest;
 use App\Http\Requests\UpdateHostelRequest;
@@ -13,6 +13,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\RejectingHostelRequest;
 
 class HostelController extends Controller
 {
@@ -77,7 +78,7 @@ class HostelController extends Controller
     public function show(Hostel $hostel): JsonResponse
     {
         Gate::authorize('view', $hostel);
-
+        $hostel->load('images');
         return $this->successResponse(
             new HostelResource($hostel),
             'Hostel retrieved successfull.'
@@ -148,5 +149,27 @@ class HostelController extends Controller
                 return new HostelResource($hostel);
             }),
         ]);
+    }
+
+    public function approving(Hostel $hostel): JsonResponse {
+        $hostel->update([
+            'status' => HostelStatus::APPROVED->value,
+            'rejection_reason' => null,
+        ]);
+        return $this->successResponse(
+            new HostelResource($hostel->fresh()),
+            'Hostel approved successfully',
+        );
+    }
+
+    public function rejecting(RejectingHostelRequest $request, Hostel $hostel): JsonResponse {
+        $hostel->update([
+            'status' => HostelStatus::REJECTED->value,
+            'rejectes_reason' => $request->validated('rejected_reason'),
+        ]);
+        return $this->successResponse(
+            new HostelResource($hostel->fresh()),
+            'Hostel rejected successfull.',
+        );
     }
 }
