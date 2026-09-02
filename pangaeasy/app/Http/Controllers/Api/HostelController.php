@@ -154,7 +154,7 @@ class HostelController extends Controller
     public function approving(Hostel $hostel): JsonResponse {
         $hostel->update([
             'status' => HostelStatus::APPROVED->value,
-            'rejection_reason' => null,
+            'rejected_reason' => null,
         ]);
         return $this->successResponse(
             new HostelResource($hostel->fresh()),
@@ -165,7 +165,7 @@ class HostelController extends Controller
     public function rejecting(RejectingHostelRequest $request, Hostel $hostel): JsonResponse {
         $hostel->update([
             'status' => HostelStatus::REJECTED->value,
-            'rejectes_reason' => $request->validated('rejected_reason'),
+            'rejected_reason' => $request->validated('rejected_reason'),
         ]);
         return $this->successResponse(
             new HostelResource($hostel->fresh()),
