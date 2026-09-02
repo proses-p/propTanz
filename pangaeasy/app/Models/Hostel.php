@@ -21,7 +21,7 @@ class Hostel extends Model
         'landmark',
         'hostel_type',
         'status',
-        'rejection_reason',
+        'rejected_reason',
     ];
 
     public function landlord()

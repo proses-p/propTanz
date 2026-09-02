@@ -25,7 +25,7 @@ class HostelResource extends JsonResource
             'landmark' => $this->landmark,
             'hostel_type' => $this->hostel_type,
             'status' => $this->status,
-            'rejection_reason' => $this->rejection_reason,
+            'rejected_reason' => $this->rejected_reason,
             'images' => $this->whenLoaded('images', function () {
                 return $this->images->map(function ($image) {
 
