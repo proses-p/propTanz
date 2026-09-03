@@ -23,7 +23,7 @@ class RejectingHostelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'rejection_reason' => [
+            'rejected_reason' => [
                 'required',
                 'string',
                 'min:10',

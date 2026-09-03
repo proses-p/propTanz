@@ -33,7 +33,7 @@ const hostelService = {
     },
 
     rejecting(id, data) {
-        return api.patch(`/hostels/${id}/reject`, data);
+        return api.patch(`/hostels/${id}/rejecting`, data);
     }
 };
 
