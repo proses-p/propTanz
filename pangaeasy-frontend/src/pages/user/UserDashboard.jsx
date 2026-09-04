@@ -50,28 +50,49 @@ export default function UserDashboard() {
                         What would you like to do today?
                     </h1>
                     <p className="mt-3 text-base leading-7 text-slate-500">
-                        Choose a hostel option to get started with your next step.
+                        Choose a property option to get started with your next step.
                     </p>
                 </header>
 
-                <button
-                    type="button"
-                    onClick={() => setIsModalOpen(true)}
-                    className="group flex w-full max-w-sm flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-100 sm:p-7"
-                >
-                    <span className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                        <FiHome size={28} aria-hidden="true" />
-                    </span>
-                    <span className="flex items-center justify-between gap-4">
-                        <span>
-                            <span className="block text-xl font-bold">Hostels</span>
-                            <span className="mt-2 block text-sm leading-6 text-slate-500">
-                                List a property or find your next place to stay.
-                            </span>
+                <div className="grid gap-5 md:grid-cols-2">
+                    <button
+                        type="button"
+                        onClick={() => setIsModalOpen(true)}
+                        className="group flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-200 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-100 sm:p-7"
+                    >
+                        <span className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                            <FiHome size={28} aria-hidden="true" />
                         </span>
-                        <FiArrowRight className="shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" size={22} aria-hidden="true" />
-                    </span>
-                </button>
+                        <span className="flex items-center justify-between gap-4">
+                            <span>
+                                <span className="block text-xl font-bold">Hostels</span>
+                                <span className="mt-2 block text-sm leading-6 text-slate-500">
+                                    List a property or find your next place to stay.
+                                </span>
+                            </span>
+                            <FiArrowRight className="shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600" size={22} aria-hidden="true" />
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => navigate("/apartments")}
+                        className="group flex w-full flex-col rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition duration-200 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-emerald-100 sm:p-7"
+                    >
+                        <span className="mb-8 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                            <FiHome size={28} aria-hidden="true" />
+                        </span>
+                        <span className="flex items-center justify-between gap-4">
+                            <span>
+                                <span className="block text-xl font-bold">Apartments</span>
+                                <span className="mt-2 block text-sm leading-6 text-slate-500">
+                                    Manage your apartment listings and details.
+                                </span>
+                            </span>
+                            <FiArrowRight className="shrink-0 text-slate-400 transition group-hover:translate-x-1 group-hover:text-emerald-600" size={22} aria-hidden="true" />
+                        </span>
+                    </button>
+                </div>
             </div>
 
             {isModalOpen && (

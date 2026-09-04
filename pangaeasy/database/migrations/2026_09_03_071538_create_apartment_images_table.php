@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('apartment_images', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('apartment_id');
+            $table->string('image_1')->nullable();
+            $table->string('image_2')->nullable();
+            $table->string('image_3')->nullable();
+            $table->string('image_4')->nullable();
+            $table->string('image_5')->nullable();
+            $table->string('video')->nullable();
             $table->timestamps();
         });
     }

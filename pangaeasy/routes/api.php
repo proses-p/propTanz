@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\HostelController;
+use App\Http\Controllers\Api\ApartmentController;
+use App\Http\Controllers\Api\ApartmentImageController;
 use App\Http\Controllers\Api\OwnerRequestController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use Illuminate\Http\Request;
@@ -28,6 +30,11 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::middleware('role:ADMIN,USER')->group(function () {
+            Route::apiResource('apartments', ApartmentController::class);
+            Route::get('/apartments/{apartment}/images', [ApartmentImageController::class, 'index']);
+            Route::post('/apartments/{apartment}/images', [ApartmentImageController::class, 'store']);
+            Route::delete('/apartments/{apartment}/images/{image}', [ApartmentImageController::class, 'destroy']);
+
             Route::get('/hostels', [HostelController::class, 'index']);
             Route::get('/hostels/statistics', [HostelController::class, 'statistics']);
             Route::get('/hostels/{hostel}', [HostelController::class, 'show']);

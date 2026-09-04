@@ -12,7 +12,6 @@ class ApartmentImage extends Model
     // use SoftDeletes; // Ikiwa umetumia softDeletes()
 
     protected $table = 'apartment_images';
-    protected $primaryKey = 'images_id';
     public $timestamps = true; //  timestamps
 
     protected $fillable = [
@@ -26,7 +25,6 @@ class ApartmentImage extends Model
     ];
 
     protected $casts = [
-        'images_id' => 'integer',
         'apartment_id' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -36,7 +34,7 @@ class ApartmentImage extends Model
     // Relationships
     public function apartment()
     {
-        return $this->belongsTo(ApartmentDetail::class, 'apartment_id', 'apartment_id');
+        return $this->belongsTo(ApartmentDetails::class, 'apartment_id');
     }
 
     // Accessors

@@ -5,26 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ApartmentDetail extends Model
+class ApartmentDetails extends Model
 {
     use HasFactory;
 
     protected $table = 'apartment_details';
-    protected $primaryKey = 'apartment_id';
 
     protected $fillable = [
         'name',
-        'description',//hapa ita include street ,town,address
-        'apartment_images_id',
-        
+        'description',
+        'street',
+        'town',
+        'address',
     ];
 
     public function images()
     {
-        return $this->belongsTo(
-            ApartmentImage::class,
-            'apartment_images_id',
-            'images_id'
-        );
+        return $this->hasMany(ApartmentImage::class, 'apartment_id');
     }
 }
