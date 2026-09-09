@@ -14,6 +14,9 @@ import OwnerRequests from "./pages/hostel/OwnerRequests";
 import HostelRegistration from "./pages/hostel/HostelRegistration";
 import CreateHostel from "./pages/hostel/CreateHostel";
 import AdminHostelDetails from "./pages/hostel/AdminHostelDetails";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -30,7 +33,13 @@ function App() {
           <Route path="/register" element={<RedirectIfAuthenticated><Register /></RedirectIfAuthenticated>} />
 
           <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><HostelManagement /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><AdminLayout /></ProtectedRoute>}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="hostels" element={<HostelManagement />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="owner-request" element={<OwnerRequests />} />
+            <Route path="hostels/:id" element={<AdminHostelDetails />} />
+          </Route>
           <Route path="/dashboard" element={<ProtectedRoute roles={[ROLE_USER]}><UserDashboard /></ProtectedRoute>} />
           <Route path="/hostel-management" element={<ProtectedRoute><HostelManagement /></ProtectedRoute>} />
           <Route path="/hostels/tenant" element={<ProtectedRoute roles={[ROLE_USER]}><TenantHostels /></ProtectedRoute>} />
@@ -39,7 +48,6 @@ function App() {
           <Route path="/admin/owner-request" element={<ProtectedRoute roles={[ROLE_ADMIN]}><OwnerRequests/></ProtectedRoute>}/>
           <Route path="/hostel-registration" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><HostelRegistration/></ProtectedRoute>}/>
           <Route path="/hostel-registration/create" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><CreateHostel/></ProtectedRoute>} />
-          <Route path="/admin/hostels/:id" element={<ProtectedRoute roles={[ROLE_ADMIN]}><AdminHostelDetails/></ProtectedRoute>}/>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
