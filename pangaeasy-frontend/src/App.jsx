@@ -33,6 +33,7 @@ function App() {
           <Route path="/register" element={<RedirectIfAuthenticated><Register /></RedirectIfAuthenticated>} />
 
           <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
+<<<<<<< Updated upstream
           <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><AdminLayout /></ProtectedRoute>}>
             <Route index element={<AdminDashboard />} />
             <Route path="hostels" element={<HostelManagement />} />
@@ -40,6 +41,10 @@ function App() {
             <Route path="owner-request" element={<OwnerRequests />} />
             <Route path="hostels/:id" element={<AdminHostelDetails />} />
           </Route>
+=======
+          <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><HostelManagement /></ProtectedRoute>} />
+          <Route path="/admin/users" element={<ProtectedRoute roles={[ROLE_ADMIN]}><HostelManagement /></ProtectedRoute>} />
+>>>>>>> Stashed changes
           <Route path="/dashboard" element={<ProtectedRoute roles={[ROLE_USER]}><UserDashboard /></ProtectedRoute>} />
           <Route path="/hostel-management" element={<ProtectedRoute><HostelManagement /></ProtectedRoute>} />
           <Route path="/hostels/tenant" element={<ProtectedRoute roles={[ROLE_USER]}><TenantHostels /></ProtectedRoute>} />

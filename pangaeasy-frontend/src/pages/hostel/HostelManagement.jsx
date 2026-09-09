@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import hostelService from "../../services/hostelService";
+import ownerRequestService from "../../services/ownerRequestService";
+import useAuth from "../../hooks/useAuth";
 import HostelTable from "../../components/hostel/HostelTable";
 import HostelModal from "../../components/hostel/HostelModal";
 import HostelForm from "../../components/hostel/HostelForm";
@@ -11,18 +13,21 @@ import Pagination from "../../components/common/Pagination";
 import SortSelect from "../../components/common/SortSelect";
 
 export default function HostelManagement() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
     const [hostels, setHostels] = useState([]);
+    const [statistics, setStatistics] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 });
+    const [ownerRequests, setOwnerRequests] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [openModal, setOpenModal] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [activeView, setActiveView] = useState("dashboard");
     const [search, setSearch] = useState("");
-    const [selectedHostel, setSelectedHostel] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [hostelToDelete, setHostelToDelete] = useState(null);
     const [status, setStatus] = useState("all");
+    const [sort, setSort] = useState("newest");
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState({});
-    const [sort, setSort] = useState("newest");
+    //const [sort, setSort] = useState("newest");
 
     const sortOptions = [
         { label: "Newest", value: "newest" },
@@ -34,15 +39,9 @@ export default function HostelManagement() {
     const loadHostels = async (page = 1) => {
         try {
             setCurrentPage(page);
-            const response = await hostelService.getAll(page);
-            setHostels(response.data.data.data);
-            setPagination({
-                currentPage: response.data.data.currentPage,
-                lastPage: response.data.data.last_page,
-                total: response.data.data.total,
-            });
         } catch (error) {
-            console.error(error);
+            console.error("ADMIN DASHBOARD ERROR:", error);
+            toast.error("Unable to load dashboard data.");
         } finally {
             setLoading(false);
         }
@@ -85,7 +84,7 @@ export default function HostelManagement() {
         setOpenModal(true);
     };
 
-    const handleUpdateHostel = async (data) => {
+    const runAction = async (action, successMessage) => {
         try {
             await hostelService.update(selectedHostel.id, data);
             await loadHostels();
