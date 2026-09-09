@@ -32,6 +32,14 @@ const apartmentService = {
     deleteImage(apartmentId, imageId) {
         return api.delete(`/apartments/${apartmentId}/images/${imageId}`);
     },
+
+    getBookings() {
+        return api.get("/apartment-bookings");
+    },
+
+    createBooking(data) {
+        return api.post("/apartment-bookings", data);
+    },
 };
 
 export default apartmentService;
