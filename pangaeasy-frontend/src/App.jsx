@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HostelManagement from "./pages/hostel/HostelManagement";
 import UserDashboard from "./pages/user/UserDashboard";
 import TenantHostels from "./pages/user/TenantHostels";
@@ -7,7 +7,6 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import RedirectIfAuthenticated from "./components/auth/RedirectIfAuthenticated";
-import useAuth from "./hooks/useAuth";
 import { ROLE_ADMIN, ROLE_USER } from "./constants/roles";
 import OwnerVerification from "./pages/user/OwnerVerification";
 import OwnerRequests from "./pages/hostel/OwnerRequests";
@@ -17,12 +16,8 @@ import AdminHostelDetails from "./pages/hostel/AdminHostelDetails";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
-
-function HomeRedirect() {
-  const { user } = useAuth();
-
-  return <Navigate to={user?.role === ROLE_ADMIN ? "/admin" : "/dashboard"} replace />;
-}
+import ApartmentBrowse from "./pages/apartment/ApartmentBrowse";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
@@ -33,7 +28,6 @@ function App() {
           <Route path="/register" element={<RedirectIfAuthenticated><Register /></RedirectIfAuthenticated>} />
 
           <Route path="/" element={<ProtectedRoute><HomeRedirect /></ProtectedRoute>} />
-<<<<<<< Updated upstream
           <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><AdminLayout /></ProtectedRoute>}>
             <Route index element={<AdminDashboard />} />
             <Route path="hostels" element={<HostelManagement />} />
@@ -44,7 +38,7 @@ function App() {
 =======
           <Route path="/admin" element={<ProtectedRoute roles={ROLE_ADMIN}><HostelManagement /></ProtectedRoute>} />
           <Route path="/admin/users" element={<ProtectedRoute roles={[ROLE_ADMIN]}><HostelManagement /></ProtectedRoute>} />
->>>>>>> Stashed changes
+
           <Route path="/dashboard" element={<ProtectedRoute roles={[ROLE_USER]}><UserDashboard /></ProtectedRoute>} />
           <Route path="/hostel-management" element={<ProtectedRoute><HostelManagement /></ProtectedRoute>} />
           <Route path="/hostels/tenant" element={<ProtectedRoute roles={[ROLE_USER]}><TenantHostels /></ProtectedRoute>} />
