@@ -17,6 +17,13 @@ class ApartmentDetails extends Model
         'street',
         'town',
         'address',
+        'status',
+        'rejected_reason',
+        'reviewed_at',
+    ];
+
+    protected $casts = [
+        'reviewed_at' => 'datetime',
     ];
 
     public function images()

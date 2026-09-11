@@ -124,6 +124,14 @@ export default function HostelManagement() {
                 <button onClick={() => setOpenModal(true)} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#FDBF2D] px-5 py-3 font-bold text-slate-950 shadow-[0_10px_22px_rgba(253,191,45,0.24)] transition hover:bg-[#FAF92A]">
                     <span className="mr-2 text-lg leading-none">+</span> Add Hostel
                 </button>
+
+                <button
+                    onClick={() => navigate("/admin/apartments")}
+                    className="rounded-lg bg-white px-5 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                >
+                    Apartments
+                </button>
+
             </div>
 
             <div className="mb-5 rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(67,53,0,0.06)] ring-1 ring-[#eee6c7] sm:p-5">

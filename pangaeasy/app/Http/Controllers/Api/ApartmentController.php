@@ -56,6 +56,32 @@ class ApartmentController extends Controller
         return $this->successResponse(null, 'Apartment deleted successfully.');
     }
 
+    public function approving(ApartmentDetails $apartment): JsonResponse
+    {
+        $apartment->update([
+            'status' => 'Approved',
+            'rejected_reason' => null,
+            'reviewed_at' => now(),
+        ]);
+
+        return $this->successResponse($apartment->fresh('images'), 'Apartment approved successfully.');
+    }
+
+    public function rejecting(Request $request, ApartmentDetails $apartment): JsonResponse
+    {
+        $data = $request->validate([
+            'rejected_reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $apartment->update([
+            'status' => 'Rejected',
+            'rejected_reason' => $data['rejected_reason'] ?? null,
+            'reviewed_at' => now(),
+        ]);
+
+        return $this->successResponse($apartment->fresh('images'), 'Apartment rejected successfully.');
+    }
+
     private function validatedData(Request $request): array
     {
         return $request->validate([
