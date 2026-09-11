@@ -223,6 +223,13 @@ export default function HostelManagement() {
                     Requests
                 </button>
 
+                <button
+                    onClick={() => navigate("/admin/apartments")}
+                    className="rounded-lg bg-white px-5 py-3 font-medium text-gray-700 hover:bg-gray-50"
+                >
+                    Apartments
+                </button>
+
             </div>
 
             <div className="mb-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">

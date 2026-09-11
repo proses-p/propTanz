@@ -21,6 +21,14 @@ const apartmentService = {
         return api.delete(`/apartments/${id}`);
     },
 
+    approve(id) {
+        return api.patch(`/apartments/${id}/approving`);
+    },
+
+    reject(id, data = {}) {
+        return api.patch(`/apartments/${id}/rejecting`, data);
+    },
+
     getImages(id) {
         return api.get(`/apartments/${id}/images`);
     },

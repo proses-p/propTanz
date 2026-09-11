@@ -26,6 +26,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/owner-request', [OwnerRequestController::class, 'index']);
             Route::patch('/hostels/{hostel}/approving', [HostelController::class, 'approving']);
             Route::patch('/hostels/{hostel}/rejecting', [HostelController::class, 'rejecting']);
+            Route::patch('/apartments/{apartment}/approving', [ApartmentController::class, 'approving']);
+            Route::patch('/apartments/{apartment}/rejecting', [ApartmentController::class, 'rejecting']);
             Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
         });

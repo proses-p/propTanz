@@ -18,6 +18,7 @@ import ApartmentManagement from "./pages/apartment/ApartmentManagement";
 import ApartmentEditor from "./pages/apartment/ApartmentEditor";
 import ApartmentDetails from "./pages/apartment/ApartmentDetails";
 import ApartmentBrowse from "./pages/apartment/ApartmentBrowse";
+import AdminApartmentManagement from "./pages/apartment/AdminApartmentManagement";
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -42,6 +43,7 @@ function App() {
           <Route path="/owner-verification" element={<ProtectedRoute roles={[ROLE_USER]}><OwnerVerification /></ProtectedRoute>} />
           <Route path="/apartments/browse" element={<ProtectedRoute roles={[ROLE_USER]}><ApartmentBrowse /></ProtectedRoute>} />
           <Route path="/admin/owner-request" element={<ProtectedRoute roles={[ROLE_ADMIN]}><OwnerRequests/></ProtectedRoute>}/>
+          <Route path="/admin/apartments" element={<ProtectedRoute roles={[ROLE_ADMIN]}><AdminApartmentManagement /></ProtectedRoute>} />
           <Route path="/hostel-registration" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><HostelRegistration/></ProtectedRoute>}/>
           <Route path="/hostel-registration/create" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><CreateHostel/></ProtectedRoute>} />
           <Route path="/admin/hostels/:id" element={<ProtectedRoute roles={[ROLE_ADMIN]}><AdminHostelDetails/></ProtectedRoute>}/>
