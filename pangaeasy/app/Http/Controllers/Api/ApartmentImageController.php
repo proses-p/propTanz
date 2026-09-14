@@ -25,13 +25,19 @@ class ApartmentImageController extends Controller
     public function store(Request $request, ApartmentDetails $apartment): JsonResponse
     {
         $request->validate([
-            'image_1' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
-            'image_2' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_1' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_2' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
             'image_3' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
             'image_4' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
             'image_5' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
             'video' => ['nullable', 'file', 'mimes:mp4,mov,avi,webm', 'max:102400'],
         ]);
+
+        if (! $request->hasFile('image_1') && ! $request->hasFile('image_2') && ! $request->hasFile('image_3') && ! $request->hasFile('image_4') && ! $request->hasFile('image_5') && ! $request->hasFile('video')) {
+            return $this->errorResponse('At least one image or video is required.', [
+                'images' => ['At least one image or video is required.'],
+            ], 422);
+        }
 
         $data = ['apartment_id' => $apartment->id];
         foreach (['image_1', 'image_2', 'image_3', 'image_4', 'image_5', 'video'] as $field) {

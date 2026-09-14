@@ -50,6 +50,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('role:USER')->group(function () {
             Route::get('/browse/hostels', [HostelController::class, 'browse']);
+            Route::get('/browse/apartments', [ApartmentController::class, 'browse']);
             Route::get('/apartment-bookings', [ApartmentBookingController::class, 'index']);
             Route::post('/apartment-bookings', [ApartmentBookingController::class, 'store']);
         });

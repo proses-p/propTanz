@@ -5,6 +5,10 @@ const apartmentService = {
         return api.get(`/apartments?page=${page}`);
     },
 
+    getAvailable(page = 1) {
+        return api.get(`/browse/apartments?page=${page}`);
+    },
+
     get(id) {
         return api.get(`/apartments/${id}`);
     },

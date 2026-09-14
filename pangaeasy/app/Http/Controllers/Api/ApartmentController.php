@@ -20,6 +20,17 @@ class ApartmentController extends Controller
         );
     }
 
+    public function browse(): JsonResponse
+    {
+        return $this->successResponse(
+            ApartmentDetails::with('images')
+                ->whereIn('status', ['Approved', 'approved', 'Confirmed', 'confirmed'])
+                ->latest()
+                ->paginate(10),
+            'Approved apartments retrieved successfully.'
+        );
+    }
+
     public function store(Request $request): JsonResponse
     {
         $apartment = ApartmentDetails::create($this->validatedData($request));

@@ -27,7 +27,7 @@ export default function ApartmentBrowse() {
     useEffect(() => {
         const loadApartments = async () => {
             try {
-                const response = await apartmentService.getAll();
+                const response = await apartmentService.getAvailable();
                 setApartments(response.data.data?.data || []);
             } catch (error) {
                 toast.error(error.response?.data?.message || "Failed to load apartments.");
