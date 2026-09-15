@@ -31,12 +31,14 @@ export default function CreateHostel() {
     };
 
     const handleImagesChange = (e) => {
-        const selectedFiles = Array.from(e.target.files);
+        const selectedFiles = Array.from(e.target.files).filter((file) =>
+            file.type.startsWith("image/")
+        );
 
         setImages((prev) => [
             ...prev,
             ...selectedFiles,
-        ]);
+        ].slice(0, 10));
     };
 
     const removeImage = (index) => {
@@ -50,6 +52,11 @@ export default function CreateHostel() {
 
         if (images.length === 0) {
             toast.error("Please upload at least one hostel image.");
+            return;
+        }
+
+        if (images.some((image) => image.size > 5 * 1024 * 1024)) {
+            toast.error("Each hostel image must be 5MB or smaller.");
             return;
         }
 
