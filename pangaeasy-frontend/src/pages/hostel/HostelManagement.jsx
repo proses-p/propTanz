@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import hostelService from "../../services/hostelService";
 import HostelTable from "../../components/hostel/HostelTable";
 import HostelModal from "../../components/hostel/HostelModal";
 import HostelForm from "../../components/hostel/HostelForm";
 import EmptyState from "../../components/hostel/EmptyState";
 import ConfirmModal from "../../components/common/ConfirmModal";
-import { toast } from "react-toastify";
-import StatisticsCard from "../../components/dashboard/StatisticsCard";
 import StatusFilter from "../../components/common/StatusFilter";
 import Pagination from "../../components/common/Pagination";
 import SortSelect from "../../components/common/SortSelect";
-import OwnerRequests from "./OwnerRequests";
-import { useNavigate } from "react-router-dom";
 
 export default function HostelManagement() {
     const [hostels, setHostels] = useState([]);
@@ -26,54 +23,16 @@ export default function HostelManagement() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pagination, setPagination] = useState({});
     const [sort, setSort] = useState("newest");
-    const [statistics, setStatistics] = useState({
-        total: 0,
-        approved: 0,
-        pending: 0,
-        rejected: 0,
-    });
-    const [activeTab, setActiveTab] = useState("hostels");
-    const navigate = useNavigate();
 
     const sortOptions = [
-        {
-            label: "Newest",
-            value: "newest",
-        },
-        {
-            label: "Oldest",
-            value: "oldest",
-        },
-        {
-            label: "A - z",
-            value: "asc",
-        },
-        {
-            label: "Z - A",
-            value: "desc",
-        },
-    ]
-
-    const handleCreateHostel = async (data) => {
-        try {
-            await hostelService.create(data); // this calls a POST /api/v1/hostels and sends data of form
-            await loadHostels(); // refreshes the browser
-            await loadStatistics();
-            toast.success("Hostel created successfully!.");
-            setOpenModal(false); // closes the modal after success
-
-        } catch (error) {
-            
-            if(error.response?.status !== 422) {
-                toast.error("Something went wrong.");
-            }
-            throw error;
-        }
-    }
-
+        { label: "Newest", value: "newest" },
+        { label: "Oldest", value: "oldest" },
+        { label: "A - z", value: "asc" },
+        { label: "Z - A", value: "desc" },
+    ];
 
     const loadHostels = async (page = 1) => {
-        try{
+        try {
             setCurrentPage(page);
             const response = await hostelService.getAll(page);
             setHostels(response.data.data.data);
@@ -87,37 +46,38 @@ export default function HostelManagement() {
         } finally {
             setLoading(false);
         }
-        
     };
 
+    useEffect(() => {
+        loadHostels();
+    }, []);
+
     const displayHostels = hostels.filter((hostel) => {
-        const matchSearch = 
-            hostel.hostel_name
-            .toLowerCase()
-            .includes(search.toLowerCase());
-
-        const matchStatus = 
-            status === "all" ||
-            hostel.status === status;
-
+        const matchSearch = hostel.hostel_name.toLowerCase().includes(search.toLowerCase());
+        const matchStatus = status === "all" || hostel.status === status;
         return matchSearch && matchStatus;
     });
 
-    {/**
-        sorting functionality or logic */}
     const sortedHostels = [...displayHostels].sort((a, b) => {
         switch (sort) {
-            case "asc":
-                return a.hostel_name.localeCompare(b.hostel_name);
-            case "desc":
-                return b.hostel_name.localeCompare(a.hostel_name);
-            case "oldest":
-                return a.id - b.id;
-            case "newest":
-            default:
-                return b.id - a.id;
+            case "asc": return a.hostel_name.localeCompare(b.hostel_name);
+            case "desc": return b.hostel_name.localeCompare(a.hostel_name);
+            case "oldest": return a.id - b.id;
+            default: return b.id - a.id;
         }
     });
+
+    const handleCreateHostel = async (data) => {
+        try {
+            await hostelService.create(data);
+            await loadHostels();
+            toast.success("Hostel created successfully!.");
+            setOpenModal(false);
+        } catch (error) {
+            if (error.response?.status !== 422) toast.error("Something went wrong.");
+            throw error;
+        }
+    };
 
     const handleEditClick = (hostel) => {
         setSelectedHostel(hostel);
@@ -129,15 +89,12 @@ export default function HostelManagement() {
         try {
             await hostelService.update(selectedHostel.id, data);
             await loadHostels();
-            await loadStatistics();
             toast.success("Hostel updated successfully!.");
             setOpenModal(false);
             setIsEditing(false);
             setSelectedHostel(null);
         } catch (error) {
-            if(error.response?.status !== 422) {
-                toast.error("Something went wrong.");
-            }
+            if (error.response?.status !== 422) toast.error("Something went wrong.");
             throw error;
         }
     };
@@ -146,81 +103,26 @@ export default function HostelManagement() {
         try {
             await hostelService.delete(hostelToDelete.id);
             await loadHostels();
-            await loadStatistics();
             toast.success("Hostel deleted successfully!.");
             setDeleteModalOpen(false);
             setHostelToDelete(null);
         } catch (error) {
             console.error(error);
         }
-    }
-
-    {/**
-        the loading statistics function */}
-
-    const loadStatistics = async () => {
-        try {
-            const response = await hostelService.statistics();
-            console.log("Statistics Response:", response);
-            setStatistics(response.data.data);
-        } catch (error) {
-            console.log("STATISTICS ERROR:", error.response);
-            //console.error(error);
-        }
-    }
-
-    {/* useEffect */}
-
-    useEffect(() => {
-        loadHostels();
-        loadStatistics();
-
-    }, []);
-
-    const handleDeleteClick = (hostel) => {
-        setHostelToDelete(hostel);
-        setDeleteModalOpen(true);
     };
 
-
-    if (loading) {
-        return <h2>Loading hostels....</h2>;
-    }
-
-    console.log(statistics);
+    if (loading) return <div className="rounded-2xl bg-white p-10 text-center text-slate-500 shadow-sm ring-1 ring-[#eee6c7]">Loading hostels...</div>;
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
-            <div className="mb-8 flex items-center justify-between">
-                <div>
-                    <h1 className="mb-6 text-3xl font-bold">Hostel Management</h1>
-                    <p className="text-gray-500">Manage all registered hostels</p>
-                    
+        <div className="mx-auto max-w-[1500px]">
+            <div className="mb-9 flex flex-col gap-5 border-b border-[#eee6c7] pb-8 sm:flex-row sm:items-end sm:justify-between">
+                <div className="max-w-2xl">
+                    <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#b27a00]">Property directory</p>
+                    <h1 className="text-3xl font-black tracking-[-0.05em] text-slate-950 sm:text-4xl">Hostels</h1>
+                    <p className="mt-3 text-base leading-7 text-slate-600">Manage registered properties, review details, and keep your portfolio organized.</p>
                 </div>
-
-                 
-                <button onClick={() => setOpenModal(true)}
-                    className="rounded-lg bg-blue-600 px-5 py-3 font-medium text-white hover:bg-blue-700">
-                        + Add Hostel
-                    </button>
-                
-            </div>
-
-            {activeTab === "hostels" ? (
-                <>
-                    <div className="mb-6 flex gap-3">
-                <button 
-                    onClick={() => setActiveTab("hostels")}
-                    className={`rounded-lg px-5 py-3 font-medium ${activeTab === "hostels" ? "bg-blue-600 text-white" : "bg-white text-gray-700"}`}
-                >
-                    Hostels
-                </button>
-
-                <button 
-                    onClick={() => navigate("/admin/owner-request")}
-                    className={`rounded-lg px-5 py-3 font-medium ${activeTab === "requests" ? "bg-blue-600 text-white" : "bg-white text-gray-700"}`}
-                >
-                    Requests
+                <button onClick={() => setOpenModal(true)} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#FDBF2D] px-5 py-3 font-bold text-slate-950 shadow-[0_10px_22px_rgba(253,191,45,0.24)] transition hover:bg-[#FAF92A]">
+                    <span className="mr-2 text-lg leading-none">+</span> Add Hostel
                 </button>
 
                 <button
@@ -232,115 +134,20 @@ export default function HostelManagement() {
 
             </div>
 
-            <div className="mb-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-                <StatisticsCard 
-                    title="Total Hostels"
-                    value={statistics.total}
-                    color="text-blue-600"
-                    icon=""
-                />
-
-                <StatisticsCard
-                    title="Approved"
-                    value={statistics.approved}
-                    color="text-green-600"
-                    icon=""
-                />
-
-                <StatisticsCard
-                    title="Pending"
-                    value={statistics.pending}
-                    color="text-yellow-500"
-                    icon=""
-                />
-
-                <StatisticsCard
-                    title="Rejected"
-                    value={statistics.rejected}
-                    color="text-red-600"
-                    icon=""
-                />
-
-
-
+            <div className="mb-5 rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(67,53,0,0.06)] ring-1 ring-[#eee6c7] sm:p-5">
+                <input type="text" placeholder="Search hostel by name..." value={search} onChange={(event) => setSearch(event.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#FDBF2D] focus:bg-white focus:ring-4 focus:ring-[#FAF92A]/30" />
+            </div>
+            <div className="mb-8 flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(67,53,0,0.06)] ring-1 ring-[#eee6c7] sm:flex-row sm:flex-wrap sm:items-center sm:p-5">
+                <StatusFilter value={status} onChange={setStatus} />
+                <SortSelect value={sort} onChange={setSort} options={sortOptions} />
             </div>
 
-            <div className="mb-6">
-                <input
-                    type="text"
-                    placeholder="Search hostel by name.."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            </div>
-
-            <div className="mb-6 flex flex-wrap gap-5">
-                <StatusFilter
-                    value={status}
-                    onChange={setStatus}
-                />
-
-                <SortSelect
-                    value={sort}
-                    onChange={setSort}
-                    options={sortOptions}
-                />
-            </div>
-
-            
-
-            {   
-                sortedHostels.length > 0 ? (
-                    <HostelTable hostels={sortedHostels} onEdit={handleEditClick} onDelete={handleDeleteClick}></HostelTable>
-                ) : (
-                    <EmptyState
-                        title="No hostels found"
-                        message="There are no hostels matching your search."
-                    />
-                )
-            }  
-
-            <Pagination
-                currentPage={currentPage}
-                lastPage={pagination.lastPage}
-                onPageChange={loadHostels}
-            />         
-            <HostelModal isOpen={openModal}
-                        onClose={() => {
-
-                            setOpenModal(false);
-                            setIsEditing(false);
-                            setSelectedHostel(null);
-                            }}
-                            title="Create Hostel">
-                            <HostelForm 
-                                initialData={selectedHostel}
-                                buttonText={isEditing ? "Update Hostel" : "Save Hostel"}
-                            onSubmit={
-                                isEditing
-                                    ? handleUpdateHostel
-                                    : handleCreateHostel
-                            } />
+            {sortedHostels.length > 0 ? <HostelTable hostels={sortedHostels} onEdit={handleEditClick} onDelete={(hostel) => { setHostelToDelete(hostel); setDeleteModalOpen(true); }} /> : <EmptyState title="No hostels found" message="There are no hostels matching your search." />}
+            <Pagination currentPage={currentPage} lastPage={pagination.lastPage} onPageChange={loadHostels} />
+            <HostelModal isOpen={openModal} onClose={() => { setOpenModal(false); setIsEditing(false); setSelectedHostel(null); }} title={isEditing ? "Edit Hostel" : "Create Hostel"}>
+                <HostelForm initialData={selectedHostel} buttonText={isEditing ? "Update Hostel" : "Save Hostel"} onSubmit={isEditing ? handleUpdateHostel : handleCreateHostel} />
             </HostelModal>
-
-            <ConfirmModal
-                isOpen={deleteModalOpen}
-                title="Delete Hostel"
-                message={`Are you sure you want to delete "${hostelToDelete?.hostel_name}"?`}
-                confirmText="Delete"
-                cancelText="Cancel"
-                onCancel={() => {
-                    setDeleteModalOpen(false);
-                    setHostelToDelete(null);
-                }}
-                onConfirm={handleDeleteHostel}
-                    
-            />
-                </>
-            ) : (
-                <OwnerRequests />
-            )}
+            <ConfirmModal isOpen={deleteModalOpen} title="Delete Hostel" message={`Are you sure you want to delete "${hostelToDelete?.hostel_name}"?`} confirmText="Delete" cancelText="Cancel" onCancel={() => { setDeleteModalOpen(false); setHostelToDelete(null); }} onConfirm={handleDeleteHostel} />
         </div>
     );
 }

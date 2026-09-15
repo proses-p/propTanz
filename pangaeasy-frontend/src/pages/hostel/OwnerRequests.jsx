@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ownerRequestService from "../../services/ownerRequestService";
 import { toast } from "react-toastify";
+import { Check, X } from "lucide-react";
 
 export default function OwnerRequests()
 {
@@ -51,33 +52,34 @@ export default function OwnerRequests()
     }
 
     return (
-        <div>
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold">
+        <div className="mx-auto max-w-[1500px]">
+            <div className="mb-9 border-b border-[#eee6c7] pb-8">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#b27a00]">Review queue</p>
+                <h1 className="text-3xl font-black tracking-[-0.05em] text-slate-950 sm:text-4xl">
                     Requests
                 </h1>
-                <p className="mt-1 text-gray-100">
+                <p className="mt-3 text-base leading-7 text-slate-600">
                     Review and manage hostel ownership verification requests.
                 </p>
             </div>
 
             <div className="mb-8 flex flex-wrap gap-3">
                 <button onClick={() => setActiveStatus("pending")}
-                        className={`rounded-lg px-4 py-2 ${activeStatus === "pending" ? "bg-blue-600 text-white" : "bg-white"}`}
+                        className={`rounded-xl px-4 py-2.5 text-sm font-bold ${activeStatus === "pending" ? "bg-[#FAF92A] text-slate-950" : "bg-white text-slate-600 ring-1 ring-slate-200"}`}
                 >
                     Pending
 
                 </button>
 
                 <button onClick={() => setActiveStatus("approved")}
-                        className={`rounded-lg px-4 py-2 ${activeStatus === "approved" ? "bg-blue-600 text-white" : "bg-white"}`}
+                        className={`rounded-xl px-4 py-2.5 text-sm font-bold ${activeStatus === "approved" ? "bg-[#FAF92A] text-slate-950" : "bg-white text-slate-600 ring-1 ring-slate-200"}`}
                 >
                     Approved
 
                 </button>
 
                 <button onClick={() => setActiveStatus("rejected")}
-                        className={`rounded-lg px-4 py-2 ${activeStatus === "rejected" ? "bg-blue-600 text-white" : "bg-white"}`}
+                        className={`rounded-xl px-4 py-2.5 text-sm font-bold ${activeStatus === "rejected" ? "bg-[#FAF92A] text-slate-950" : "bg-white text-slate-600 ring-1 ring-slate-200"}`}
                 >
                     Rejected
 
@@ -86,16 +88,16 @@ export default function OwnerRequests()
 
             </div>
 
-            <div className="overflow-hidden rounded-lg bg-white shadow-sm">
+            <div className="overflow-hidden rounded-2xl bg-white shadow-[0_10px_28px_rgba(67,53,0,0.06)] ring-1 ring-[#eee6c7]">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="border-b bg-gray-50">
+                        <thead className="border-b border-[#f1eddc] bg-[#fff8cf]">
                             <tr>
-                                <th className="px-5 py-4">Name</th>
-                                <th className="px-5 py-4">Phone</th>
-                                <th className="px-5 py-4">Reason</th>
-                                <th className="px-5 py-4">Status</th>
-                                <th className="px-5 py-4 text-right">Actions</th>
+                                <th className="px-5 py-4 text-xs uppercase tracking-[0.12em] text-slate-600">Name</th>
+                                <th className="px-5 py-4 text-xs uppercase tracking-[0.12em] text-slate-600">Phone</th>
+                                <th className="px-5 py-4 text-xs uppercase tracking-[0.12em] text-slate-600">Reason</th>
+                                <th className="px-5 py-4 text-xs uppercase tracking-[0.12em] text-slate-600">Status</th>
+                                <th className="px-5 py-4 text-right text-xs uppercase tracking-[0.12em] text-slate-600">Actions</th>
                             </tr>
                         </thead>
 
@@ -114,28 +116,32 @@ export default function OwnerRequests()
                                 </tr>
                             ) : (
                                 filteredRequests.map((request) => (
-                                    <tr key={request.id} className="border-b">
-                                        <td className="px-5 py-4">{request.full_name}</td>
-                                        <td className="px-5 py-4">{request.phone}</td>
-                                        <td className="px-5 py-4">{request.reason}</td>
+                                    <tr key={request.id} className="border-b border-[#f1eddc]">
+                                        <td className="px-5 py-5 font-semibold text-slate-800">{request.full_name}</td>
+                                        <td className="px-5 py-5 text-sm text-slate-600">{request.phone}</td>
+                                        <td className="px-5 py-5 text-sm text-slate-600">{request.reason}</td>
                                         <td className="px-5 py-4">
-                                            <span className="rounded-full bg-gray-100 px-3 py-1 text-sm">{request.status}</span>
+                                            <span className="rounded-full bg-[#fff1bd] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#8b5c00]">{request.status}</span>
                                         </td>
                                         <td className="px-5 py-4 text-right">
                                             {request.status === "pending" && (
                                                 <div className="flex justify-end gap-2">
                                                     <button
                                                         onClick={() => handleApprove(request.id)}
-                                                        className="rounded-lg bg-green-600 px-3 py-2 text-sm text-white hover:bg-green-700"
+                                                        className="rounded-lg bg-[#FDBF2D] p-2.5 text-slate-950 hover:bg-[#FAF92A]"
+                                                        title="Approve request"
+                                                        aria-label="Approve request"
                                                     >
-                                                        Approve
+                                                        <Check size={17} />
                                                     </button>
 
                                                     <button
                                                         onClick={() => handleReject(request.id)}
-                                                        className="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-700"
+                                                        className="rounded-lg bg-[#fff1c7] p-2.5 text-[#8a5b00] hover:bg-[#ffe7a0]"
+                                                        title="Reject request"
+                                                        aria-label="Reject request"
                                                     >
-                                                        Reject
+                                                        <X size={17} />
                                                     </button>
                                                 </div>
                                             )}
