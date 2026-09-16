@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { FiArrowLeft, FiCalendar, FiCheck, FiChevronLeft, FiChevronRight, FiHome, FiMapPin, FiSearch, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
+import { FiArrowLeft, FiCalendar, FiCheck, FiChevronLeft, FiChevronRight, FiHome, FiLogOut, FiMail, FiMapPin, FiPhone, FiSearch, FiUser, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import apartmentService from "../../services/apartmentService";
 import { BASE_DOMAIN } from "../../services/api";
+import useAuth from "../../hooks/useAuth";
 
 const mediaUrl = (path) => path?.startsWith("http") ? path : `${BASE_DOMAIN}/storage/${path}`;
 
@@ -14,6 +15,7 @@ const getImages = (apartment) => (apartment.images || []).flatMap((item) => [1, 
 
 export default function ApartmentBrowse() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const [apartments, setApartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -92,10 +94,24 @@ export default function ApartmentBrowse() {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate("/login");
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Logout failed.");
+        }
+    };
+
     return (
         <div className="min-h-screen bg-slate-50 px-5 py-8 text-slate-900 sm:px-8 lg:py-12">
             <div className="mx-auto max-w-7xl">
-                <button type="button" onClick={() => navigate("/dashboard")} className="mb-6 flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"><FiArrowLeft /> Back to dashboard</button>
+                <div className="mb-6 flex items-center justify-between gap-3">
+                    <button type="button" onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline"><FiArrowLeft /> Back to dashboard</button>
+                    <button type="button" onClick={handleLogout} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                        <FiLogOut /> Logout
+                    </button>
+                </div>
                 <header className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-emerald-600">Find your next home</p>
@@ -145,7 +161,13 @@ export default function ApartmentBrowse() {
                         <div className="flex gap-2 overflow-x-auto">{getImages(selectedApartment).map((image, index) => <button type="button" key={image} onClick={() => { setSelectedPhotoIndex(index); setPhotoZoom(1); }} className={`h-12 w-16 shrink-0 overflow-hidden rounded-lg border-2 ${index === selectedPhotoIndex ? "border-emerald-600" : "border-transparent"}`} title={`View photo ${index + 1}`}><img src={image} alt="" className="h-full w-full object-cover" /></button>)}</div>
                         <div className="flex shrink-0 gap-1"><button type="button" onClick={() => setPhotoZoom((value) => Math.max(1, value - 0.25))} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100" title="Zoom out"><FiZoomOut /></button><button type="button" onClick={() => setPhotoZoom((value) => Math.min(3, value + 0.25))} className="rounded-lg p-2 text-slate-600 hover:bg-slate-100" title="Zoom in"><FiZoomIn /></button></div>
                     </div>
-                    <div className="p-6"><h2 className="text-2xl font-bold">{selectedApartment.name}</h2><p className="mt-2 flex items-center gap-2 text-slate-500"><FiMapPin className="text-emerald-600" /> {selectedApartment.address}</p><p className="mt-5 leading-7 text-slate-600">{selectedApartment.description}</p><button type="button" onClick={() => { setSelectedApartment(null); setBookingApartment(selectedApartment); }} disabled={hasBooking(selectedApartment.id)} className="mt-6 w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:bg-slate-300">{hasBooking(selectedApartment.id) ? "Booking requested" : "Book this apartment"}</button></div>
+                    <div className="p-6"><h2 className="text-2xl font-bold">{selectedApartment.name}</h2><p className="mt-2 flex items-center gap-2 text-slate-500"><FiMapPin className="text-emerald-600" /> {selectedApartment.address}</p><p className="mt-5 leading-7 text-slate-600">{selectedApartment.description}</p>
+                        <div className="mt-6 border-t border-slate-100 pt-5">
+                            <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Posted by</p>
+                            {selectedApartment.user ? <div className="mt-3 flex flex-col gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3">{selectedApartment.user.profile_picture_url ? <img src={selectedApartment.user.profile_picture_url} alt={`${selectedApartment.user.name} profile`} className="h-12 w-12 rounded-full object-cover ring-2 ring-white" /> : <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-200 font-bold text-emerald-800"><FiUser /></div>}<div><p className="font-bold text-slate-900">{selectedApartment.user.name}</p><p className="text-xs capitalize text-slate-500">{String(selectedApartment.user.role || "Property owner").toLowerCase()}</p></div></div><div className="space-y-1 text-xs text-slate-600">{selectedApartment.user.email && <p className="flex items-center gap-2"><FiMail className="text-emerald-600" />{selectedApartment.user.email}</p>}{selectedApartment.user.phone && <p className="flex items-center gap-2"><FiPhone className="text-emerald-600" />{selectedApartment.user.phone}</p>}</div></div> : <p className="mt-2 flex items-center gap-2 text-sm text-slate-500"><FiUser /> Poster details unavailable.</p>}
+                        </div>
+                        <button type="button" onClick={() => { setSelectedApartment(null); setBookingApartment(selectedApartment); }} disabled={hasBooking(selectedApartment.id)} className="mt-6 w-full rounded-lg bg-emerald-600 px-4 py-3 font-semibold text-white hover:bg-emerald-700 disabled:bg-slate-300">{hasBooking(selectedApartment.id) ? "Booking requested" : "Book this apartment"}</button>
+                    </div>
                 </div>
             </div>}
 

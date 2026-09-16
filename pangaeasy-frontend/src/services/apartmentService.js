@@ -49,6 +49,10 @@ const apartmentService = {
         return api.get("/apartment-bookings");
     },
 
+    approveBooking(id) {
+        return api.patch(`/apartment-bookings/${id}/approve`);
+    },
+
     createBooking(data) {
         return api.post("/apartment-bookings", data);
     },

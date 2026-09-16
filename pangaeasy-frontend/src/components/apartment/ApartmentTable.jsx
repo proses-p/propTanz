@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiChevronLeft, FiChevronRight, FiDownload, FiEdit2, FiEye, FiMaximize2, FiTrash2, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
+import { FiChevronLeft, FiChevronRight, FiDownload, FiEdit2, FiEye, FiMaximize2, FiTrash2, FiUploadCloud, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { BASE_DOMAIN } from "../../services/api";
 
 const mediaUrl = (path) => path?.startsWith("http") ? path : `${BASE_DOMAIN}/storage/${path}`;
@@ -64,6 +64,7 @@ export default function ApartmentTable({ apartments, onView, onEdit, onDelete })
                             <td className="px-5 py-4">
                                 <div className="flex gap-2">
                                     <button type="button" onClick={() => onView(apartment)} title="View apartment" className="rounded-lg p-2 text-slate-600 hover:bg-slate-200"><FiEye /></button>
+                                    <button type="button" onClick={() => onView(apartment)} title="Upload media" className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50"><FiUploadCloud /></button>
                                     <button type="button" onClick={() => onEdit(apartment)} title="Edit apartment" className="rounded-lg p-2 text-blue-600 hover:bg-blue-50"><FiEdit2 /></button>
                                     <button type="button" onClick={() => onDelete(apartment)} title="Delete apartment" className="rounded-lg p-2 text-red-600 hover:bg-red-50"><FiTrash2 /></button>
                                 </div>

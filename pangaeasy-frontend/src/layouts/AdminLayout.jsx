@@ -22,6 +22,7 @@ const navigation = [
 ];
 
 const secondaryNavigation = [
+    { label: "Profile", to: "/profile", icon: UserRound },
     { label: "Notifications", to: "/admin/notifications", icon: Bell },
     { label: "Settings", to: "/admin/settings", icon: Settings },
 ];

@@ -6,11 +6,12 @@ use App\Http\Controllers\Api\ApartmentImageController;
 use App\Http\Controllers\Api\ApartmentBookingController;
 use App\Http\Controllers\Api\OwnerRequestController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    return new UserResource($request->user());
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
@@ -28,6 +29,7 @@ Route::prefix('v1')->group(function () {
             Route::patch('/hostels/{hostel}/rejecting', [HostelController::class, 'rejecting']);
             Route::patch('/apartments/{apartment}/approving', [ApartmentController::class, 'approving']);
             Route::patch('/apartments/{apartment}/rejecting', [ApartmentController::class, 'rejecting']);
+            Route::patch('/apartment-bookings/{booking}/approve', [ApartmentBookingController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
         });
@@ -60,6 +62,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/owner-request/status', [OwnerRequestController::class, 'myStatus']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::put('/user/profile', [AuthController::class, 'updateProfile']);
 
     });
 

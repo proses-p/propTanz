@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { Activity, ArrowUpRight, Building2, CheckCircle2, Clock3, Users, XCircle } from "lucide-react";
+import { Activity, ArrowUpRight, Building2, CheckCircle2, Clock3, Home, Users, XCircle } from "lucide-react";
 import hostelService from "../../services/hostelService";
+import apartmentService from "../../services/apartmentService";
 import StatisticsCard from "../../components/dashboard/StatisticsCard";
 
 const initialStatistics = { total: 0, approved: 0, pending: 0, rejected: 0 };
 
 export default function AdminDashboard() {
     const [statistics, setStatistics] = useState(initialStatistics);
+    const [apartmentStats, setApartmentStats] = useState({ total: 0, approved: 0, pending: 0, rejected: 0 });
     const [loading, setLoading] = useState(true);
+    const [apartmentLoading, setApartmentLoading] = useState(true);
 
     useEffect(() => {
         const loadStatistics = async () => {
@@ -20,7 +23,23 @@ export default function AdminDashboard() {
                 setLoading(false);
             }
         };
+        const loadApartmentStatistics = async () => {
+            try {
+                const response = await apartmentService.getAll();
+                const apartments = response.data.data?.data || [];
+                const approved = apartments.filter((apartment) => (apartment.status || "Pending") === "Approved").length;
+                const pending = apartments.filter((apartment) => (apartment.status || "Pending") === "Pending").length;
+                const rejected = apartments.filter((apartment) => (apartment.status || "Pending") === "Rejected").length;
+                setApartmentStats({ total: apartments.length, approved, pending, rejected });
+            } catch (error) {
+                console.error(error);
+                setApartmentStats({ total: 0, approved: 0, pending: 0, rejected: 0 });
+            } finally {
+                setApartmentLoading(false);
+            }
+        };
         loadStatistics();
+        loadApartmentStatistics();
     }, []);
 
     const total = Math.max(statistics.total, 1);
@@ -86,6 +105,27 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-between"><span className="text-sm text-slate-300">Portfolio size</span><strong className="text-2xl text-white">{statistics.total}</strong></div>
                     </div>
                 </div>
+            </section>
+
+            <section className="mb-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_10px_28px_rgba(67,53,0,0.06)] ring-1 ring-[#eee6c7] sm:p-7">
+                <div className="mb-6 flex items-center justify-between gap-4">
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#b27a00]">Apartment section</p>
+                        <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-slate-950">Apartment portfolio overview</h2>
+                    </div>
+                    <div className="rounded-xl bg-emerald-50 p-2.5 text-emerald-700"><Home size={20} /></div>
+                </div>
+
+                {apartmentLoading ? (
+                    <div className="text-slate-500">Loading apartment summaries...</div>
+                ) : (
+                    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                        <StatisticsCard title="Total Apartments" value={apartmentStats.total} color="text-slate-950" icon={<Home size={21} />} />
+                        <StatisticsCard title="Approved Apartments" value={apartmentStats.approved} color="text-emerald-700" icon={<CheckCircle2 size={21} />} />
+                        <StatisticsCard title="Pending Apartments" value={apartmentStats.pending} color="text-amber-700" icon={<Clock3 size={21} />} />
+                        <StatisticsCard title="Rejected Apartments" value={apartmentStats.rejected} color="text-red-700" icon={<XCircle size={21} />} />
+                    </div>
+                )}
             </section>
 
             <section className="grid gap-6 lg:grid-cols-2">

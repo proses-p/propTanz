@@ -22,6 +22,7 @@ import AdminApartmentManagement from "./pages/apartment/AdminApartmentManagement
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import UserProfile from "./pages/profile/UserProfile";
 
 function HomeRedirect() {
   const { user } = useAuth();
@@ -45,6 +46,11 @@ function App() {
             <Route path="owner-request" element={<OwnerRequests />} />
             <Route path="hostels/:id" element={<AdminHostelDetails />} />
           </Route>
+          <Route path="/apartments" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><ApartmentManagement /></ProtectedRoute>} />
+          <Route path="/apartments/create" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><ApartmentEditor /></ProtectedRoute>} />
+          <Route path="/apartments/:id" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><ApartmentDetails /></ProtectedRoute>} />
+          <Route path="/apartments/:id/edit" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><ApartmentEditor /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute roles={[ROLE_ADMIN, ROLE_USER]}><UserProfile /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute roles={[ROLE_USER]}><UserDashboard /></ProtectedRoute>} />
           <Route path="/hostel-management" element={<ProtectedRoute><HostelManagement /></ProtectedRoute>} />
           <Route path="/hostels/tenant" element={<ProtectedRoute roles={[ROLE_USER]}><TenantHostels /></ProtectedRoute>} />
