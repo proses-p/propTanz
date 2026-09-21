@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import HostelManagement from "./pages/hostel/HostelManagement";
 import UserDashboard from "./pages/user/UserDashboard";
 import TenantHostels from "./pages/user/TenantHostels";
 import { AuthProvider } from "./contexts/AuthContext";
