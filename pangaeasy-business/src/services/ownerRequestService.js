@@ -1,3 +1,4 @@
+import { create } from "axios";
 import api from "./api";
 
 const ownerRequestService = {
@@ -16,6 +17,10 @@ const ownerRequestService = {
     getStatus() {
         return api.get("/owner-request/status");
     },
+
+    create(formData) {
+        return api.post("/owner-request", formData);
+    }
 };
 
 export default ownerRequestService

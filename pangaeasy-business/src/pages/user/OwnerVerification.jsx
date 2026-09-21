@@ -44,8 +44,17 @@ export default function OwnerVerification() {
             toast.success("Verification submitted! wait for approval you will be notified");
             navigate("/dashboard");
         } catch (error) {
-            console.log("OWNER REQUEST ERROR:", error.response?.data);
+            // console.error("FULL ERROR:", error);
+            // console.log("OWNER REQUEST ERROR:", error.response?.data);
+
+            // const errorMessage = 
+            //     error.response?.data?.message ||
+            //     error.response?.data?.error ||
+            //     error.response?.data?.detail || 
+            //     error.message ||
+            //     "something went wrong please try again.";
             toast.error(error.response?.data?.message || "Something went wrong. PLease try again.");
+            // toast.error(errorMessage);
         } finally {
             setSubmitting(false);
         }
