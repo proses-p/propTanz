@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { FiEdit2, FiEye, FiTrash2 } from "react-icons/fi";
 import StatusBadge from "./StatusBadge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 
@@ -33,6 +34,7 @@ export default function HostelTable({
                             <td className="px-5 py-5">
                                 <div className="flex min-w-[140px] gap-2">
                                 <button
+                                    type="button"
                                     onClick={() => navigate(`/admin/hostels/${hostel.id}`)}
                                     className="rounded-lg bg-[#FDBF2D] p-2.5 text-slate-950 transition hover:bg-[#FAF92A]"
                                     title="View hostel"
@@ -41,6 +43,7 @@ export default function HostelTable({
                                     <Eye size={17} />
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => onEdit(hostel)}
                                     className="rounded-lg bg-slate-100 p-2.5 text-slate-700 transition hover:bg-slate-200"
                                     title="Edit hostel"

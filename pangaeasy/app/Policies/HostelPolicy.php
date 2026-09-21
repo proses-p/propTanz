@@ -33,12 +33,15 @@ class HostelPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-        return $user->ownerRequests()
-            ->where('status', 'approved')
-            ->exists();
+        // if ($user->isAdmin()) {
+        //     return true;
+        // }
+        // return $user->ownerRequests()
+        //     ->where('status', 'approved')
+        //     ->exists();
+
+
+        return $user->isAdmin() || $user->isUser();
     }
 
     /**
@@ -46,12 +49,15 @@ class HostelPolicy
      */
     public function update(User $user, Hostel $hostel): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-        return $hostel->landlord_id === $user->id && $user->ownerRequests()
-            ->where('status', 'approved')
-            ->exists();
+        // if ($user->isAdmin()) {
+        //     return true;
+        // }
+        // return $hostel->landlord_id === $user->id && $user->ownerRequests()
+        //     ->where('status', 'approved')
+        //     ->exists();
+
+
+        return $user->isAdmin() || ($user->isUser() && $hostel->landlord_id === $user->id);
 
     }
 
@@ -60,12 +66,15 @@ class HostelPolicy
      */
     public function delete(User $user, Hostel $hostel): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-        return $hostel->landlord_id === $user->id && $user->ownerRequests()
-            ->where('status', 'approved')
-            ->exists();
+        // if ($user->isAdmin()) {
+        //     return true;
+        // }
+        // return $hostel->landlord_id === $user->id && $user->ownerRequests()
+        //     ->where('status', 'approved')
+        //     ->exists();
+
+
+        return $user->isAdmin() || ($user->isUser() && $hostel->landlord_id === $user->id);
     }
 
     /**
