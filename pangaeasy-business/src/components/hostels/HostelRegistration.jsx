@@ -41,6 +41,7 @@ const loadHostels = async (page = 1) => {
         });
     } catch (error) {
         console.error("HOSTELS ERROR:", error);
+        
     } finally {
         setLoading(false);
     }
