@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiEdit2, FiImage, FiMail, FiPhone, FiTrash2, FiUploadCloud, FiUser } from "react-icons/fi";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import apartmentService from "../../services/apartmentService";
 import ConfirmModal from "../../components/common/ConfirmModal";
@@ -16,6 +16,8 @@ const mediaUrl = (path) => {
 export default function ApartmentDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const apartmentBasePath = location.pathname.startsWith("/admin/") ? "/admin/apartments" : "/apartments";
     const [apartment, setApartment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [imageToDelete, setImageToDelete] = useState(null);
@@ -51,7 +53,7 @@ export default function ApartmentDetails() {
         try {
             await apartmentService.delete(id);
             toast.success("Apartment deleted successfully.");
-            navigate("/apartments");
+            navigate(apartmentBasePath);
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to delete apartment.");
         }
@@ -102,7 +104,7 @@ export default function ApartmentDetails() {
     return (
         <div className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8 lg:py-12">
             <div className="mx-auto max-w-5xl">
-                <button type="button" onClick={() => navigate("/apartments")} className="mb-6 text-sm font-semibold text-blue-600 hover:underline">Back to apartments</button>
+                <button type="button" onClick={() => navigate(apartmentBasePath)} className="mb-6 text-sm font-semibold text-blue-600 hover:underline">Back to apartments</button>
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                     <div className="flex flex-col gap-5 border-b border-slate-100 pb-6 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -111,7 +113,7 @@ export default function ApartmentDetails() {
                             <p className="mt-2 text-slate-500">{apartment.street}, {apartment.town}</p>
                         </div>
                         <div className="flex gap-2">
-                            <button type="button" onClick={() => navigate(`/apartments/${id}/edit`)} className="flex items-center gap-2 rounded-lg border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50"><FiEdit2 /> Edit</button>
+                            <button type="button" onClick={() => navigate(`${apartmentBasePath}/${id}/edit`)} className="flex items-center gap-2 rounded-lg border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50"><FiEdit2 /> Edit</button>
                             <button type="button" onClick={deleteApartment} className="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-100"><FiTrash2 /> Delete</button>
                         </div>
                     </div>

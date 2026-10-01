@@ -29,15 +29,15 @@ Route::prefix('v1')->group(function () {
             Route::patch('/hostels/{hostel}/rejecting', [HostelController::class, 'rejecting']);
             Route::patch('/apartments/{apartment}/approving', [ApartmentController::class, 'approving']);
             Route::patch('/apartments/{apartment}/rejecting', [ApartmentController::class, 'rejecting']);
-<<<<<<< HEAD
+//<<<<<<< HEAD
             // Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             // Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
 
-=======
+//=======
             Route::patch('/apartment-bookings/{booking}/approve', [ApartmentBookingController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
+//>>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
         });
 
         Route::middleware('role:ADMIN,USER')->group(function () {
@@ -68,11 +68,11 @@ Route::prefix('v1')->group(function () {
         // Route::get('/owner-request/status', [OwnerRequestController::class, 'myStatus']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
-<<<<<<< HEAD
-=======
+//<<<<<<< HEAD
+//=======
         Route::put('/user/profile', [AuthController::class, 'updateProfile']);
 
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
+//>>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
     });
 
 });

@@ -1,17 +1,9 @@
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-import { FiArrowRight, FiCalendar, FiCheckCircle, FiHome } from "react-icons/fi";
-=======
 import { useEffect, useMemo, useState } from "react";
-import { FiArrowRight, FiCalendar, FiCheckCircle, FiHome, FiLogOut, FiMapPin, FiPlus, FiSearch, FiUser, FiX } from "react-icons/fi";
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
+import { FiArrowRight, FiCalendar, FiCheckCircle, FiHome, FiLogOut, FiMapPin, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import apartmentService from "../../services/apartmentService";
-<<<<<<< HEAD
 import Navbar from "../../components/common/Navbar";
 import Sidebar from "../../components/common/Sidebar";
-=======
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
 import useAuth from "../../hooks/useAuth";
 
 const bookingStatusStyles = {
@@ -31,17 +23,13 @@ const bookingStatusLabel = {
 export default function UserDashboard() {
     const [bookings, setBookings] = useState([]);
     const navigate = useNavigate();
-<<<<<<< HEAD
-    const { loading: authLoading, isAuthenticated } = useAuth();
-=======
-    const { logout } = useAuth();
+    const { loading: authLoading, isAuthenticated, logout } = useAuth();
 
     const approvedApartmentBooking = useMemo(() => (
         [...bookings]
             .filter((booking) => ["approved", "confirmed"].includes(String(booking.status || "").toLowerCase()))
             .sort((a, b) => new Date(b.updated_at || b.created_at || 0) - new Date(a.updated_at || a.created_at || 0))[0]
     ), [bookings]);
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
 
     useEffect(() => {
         if (authLoading || !isAuthenticated) return;
@@ -67,15 +55,11 @@ export default function UserDashboard() {
     };
 
     return (
-<<<<<<< HEAD
         <div className="min-h-screen bg-slate-50 text-slate-900 lg:flex">
             <Sidebar />
             <div className="min-w-0 flex-1">
                 <Navbar />
                 <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-12">
-=======
-        <div className="min-h-screen bg-slate-50 text-slate-900">
-            <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 lg:py-12">
                 <div className="mb-6 flex items-center justify-end">
                     <div className="flex items-center gap-2">
                         <button type="button" onClick={() => navigate("/profile")} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
@@ -86,7 +70,6 @@ export default function UserDashboard() {
                         </button>
                     </div>
                 </div>
->>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
                 <header className="mb-10 max-w-2xl">
                     <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-600">
                         User dashboard
@@ -217,7 +200,6 @@ export default function UserDashboard() {
                 </section>
             </div>
             </div>
-
         </div>
     );
 }
