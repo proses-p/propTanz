@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { FiChevronLeft, FiChevronRight, FiDownload, FiEdit2, FiEye, FiMaximize2, FiTrash2, FiX, FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { BASE_DOMAIN } from "../../services/api";
 
-const mediaUrl = (path) => path?.startsWith("http") ? path : `${BASE_DOMAIN}/storage/${path}`;
+const mediaUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) return path;
+    const cleanPath = String(path).replace(/^\/+/, "").replace(/^storage\//i, "").replace(/^public\//i, "");
+    return `${BASE_DOMAIN}/storage/${cleanPath}`;
+};
 
 const apartmentImages = (apartment) => (apartment.images || []).flatMap((item) => [1, 2, 3, 4, 5]
     .map((number) => item[`image_${number}`] || item[`image_${number}_url`])

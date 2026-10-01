@@ -21,8 +21,44 @@ class ApartmentImageController extends Controller
             'Apartment images retrieved successfully.'
         );
     }
-
+   
     public function store(Request $request, ApartmentDetails $apartment): JsonResponse
+{
+    try {
+        \Log::info('FILES', $request->allFiles());
+
+        $request->validate([
+            'image_1' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_2' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_3' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_4' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'image_5' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
+            'video'   => ['nullable', 'file', 'mimes:mp4,mov,avi,webm', 'max:102400'],
+        ]);
+
+        $data = ['apartment_id' => $apartment->id];
+        foreach (['image_1','image_2','image_3','image_4','image_5','video'] as $field) {
+            if ($request->hasFile($field)) {
+                $data[$field] = $request->file($field)->store('apartments', 'public');
+            }
+        }
+
+        $images = ApartmentImage::create($data);
+
+        return $this->successResponse($images, 'Apartment images uploaded successfully.', 201);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error_type' => get_class($e),
+            'message'    => $e->getMessage(),
+            'file'       => $e->getFile(),
+            'line'       => $e->getLine(),
+            'trace'      => collect($e->getTrace())->take(3),
+        ], 500);
+    }
+}
+
+    /*public function store(Request $request, ApartmentDetails $apartment): JsonResponse
     {
         $request->validate([
             'image_1' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:102400'],
@@ -43,7 +79,7 @@ class ApartmentImageController extends Controller
         $images = ApartmentImage::create($data);
 
         return $this->successResponse($images, 'Apartment images uploaded successfully.', 201);
-    }
+    }*/
 
     public function destroy(ApartmentDetails $apartment, ApartmentImage $image): JsonResponse
     {
