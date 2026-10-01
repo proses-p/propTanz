@@ -17,17 +17,24 @@ class ApartmentDetails extends Model
         'street',
         'town',
         'address',
+        'user_id',
         'status',
         'rejected_reason',
         'reviewed_at',
     ];
 
     protected $casts = [
+        'user_id' => 'integer',
         'reviewed_at' => 'datetime',
     ];
 
     public function images()
     {
         return $this->hasMany(ApartmentImage::class, 'apartment_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

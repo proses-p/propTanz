@@ -15,17 +15,31 @@ class ApartmentController extends Controller
     public function index(): JsonResponse
     {
         return $this->successResponse(
-            ApartmentDetails::with('images')->latest()->paginate(10),
+            ApartmentDetails::with(['images', 'user'])->latest()->paginate(10),
             'Apartments retrieved successfully.'
+        );
+    }
+
+    public function browse(): JsonResponse
+    {
+        return $this->successResponse(
+            ApartmentDetails::with(['images', 'user'])
+                ->whereIn('status', ['Approved', 'approved', 'Confirmed', 'confirmed'])
+                ->latest()
+                ->paginate(10),
+            'Approved apartments retrieved successfully.'
         );
     }
 
     public function store(Request $request): JsonResponse
     {
-        $apartment = ApartmentDetails::create($this->validatedData($request));
+        $apartment = ApartmentDetails::create([
+            ...$this->validatedData($request),
+            'user_id' => $request->user()->id,
+        ]);
 
         return $this->successResponse(
-            $apartment->load('images'),
+                $apartment->load(['images', 'user']),
             'Apartment created successfully.',
             201
         );
@@ -34,7 +48,7 @@ class ApartmentController extends Controller
     public function show(ApartmentDetails $apartment): JsonResponse
     {
         return $this->successResponse(
-            $apartment->load('images'),
+              $apartment->load(['images', 'user']),
             'Apartment retrieved successfully.'
         );
     }
@@ -44,7 +58,7 @@ class ApartmentController extends Controller
         $apartment->update($this->validatedData($request));
 
         return $this->successResponse(
-            $apartment->fresh('images'),
+              $apartment->fresh(['images', 'user']),
             'Apartment updated successfully.'
         );
     }
@@ -64,7 +78,7 @@ class ApartmentController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return $this->successResponse($apartment->fresh('images'), 'Apartment approved successfully.');
+        return $this->successResponse($apartment->fresh(['images', 'user']), 'Apartment approved successfully.');
     }
 
     public function rejecting(Request $request, ApartmentDetails $apartment): JsonResponse
@@ -79,7 +93,7 @@ class ApartmentController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        return $this->successResponse($apartment->fresh('images'), 'Apartment rejected successfully.');
+        return $this->successResponse($apartment->fresh(['images', 'user']), 'Apartment rejected successfully.');
     }
 
     private function validatedData(Request $request): array

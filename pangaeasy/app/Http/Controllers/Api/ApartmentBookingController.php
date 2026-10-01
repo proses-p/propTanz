@@ -20,6 +20,18 @@ class ApartmentBookingController extends Controller
         );
     }
 
+    public function approve(ApartmentBooking $booking): JsonResponse
+    {
+        $booking->update([
+            'status' => 'approved',
+        ]);
+
+        return $this->successResponse(
+            $booking->fresh()->load('apartment'),
+            'Apartment booking approved successfully.'
+        );
+    }
+
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([

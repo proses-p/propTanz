@@ -6,11 +6,12 @@ use App\Http\Controllers\Api\ApartmentImageController;
 use App\Http\Controllers\Api\ApartmentBookingController;
 use App\Http\Controllers\Api\OwnerRequestController;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
+    return new UserResource($request->user());
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
@@ -28,9 +29,15 @@ Route::prefix('v1')->group(function () {
             Route::patch('/hostels/{hostel}/rejecting', [HostelController::class, 'rejecting']);
             Route::patch('/apartments/{apartment}/approving', [ApartmentController::class, 'approving']);
             Route::patch('/apartments/{apartment}/rejecting', [ApartmentController::class, 'rejecting']);
+<<<<<<< HEAD
             // Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
             // Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
 
+=======
+            Route::patch('/apartment-bookings/{booking}/approve', [ApartmentBookingController::class, 'approve']);
+            Route::patch('/owner-request/{ownerRequest}/approve', [OwnerRequestController::class, 'approve']);
+            Route::patch('/owner-request/{ownerRequest}/reject', [OwnerRequestController::class, 'reject']);
+>>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
         });
 
         Route::middleware('role:ADMIN,USER')->group(function () {
@@ -51,6 +58,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware('role:USER')->group(function () {
             Route::get('/browse/hostels', [HostelController::class, 'browse']);
+            Route::get('/browse/apartments', [ApartmentController::class, 'browse']);
             Route::get('/apartment-bookings', [ApartmentBookingController::class, 'index']);
             Route::post('/apartment-bookings', [ApartmentBookingController::class, 'store']);
         });
@@ -60,6 +68,11 @@ Route::prefix('v1')->group(function () {
         // Route::get('/owner-request/status', [OwnerRequestController::class, 'myStatus']);
 
         Route::post('/logout', [AuthController::class, 'logout']);
+<<<<<<< HEAD
+=======
+        Route::put('/user/profile', [AuthController::class, 'updateProfile']);
+
+>>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
     });
 
 });

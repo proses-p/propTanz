@@ -75,6 +75,8 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = (userData) => setUser(userData);
+
   useEffect(() => {
     const handler = (e) => {
       const status = e?.detail?.status;
@@ -105,7 +107,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout, isAuthenticated, hasRole }}
+      value={{ user, loading, login, register, logout, updateUser, isAuthenticated, hasRole }}
     >
       {children}
     </AuthContext.Provider>

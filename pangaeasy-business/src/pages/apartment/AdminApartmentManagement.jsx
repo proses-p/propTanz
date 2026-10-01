@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FiCheck, FiPlus, FiSearch, FiX } from "react-icons/fi";
+import { FiCheck, FiPlus, FiSearch, FiUploadCloud, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import apartmentService from "../../services/apartmentService";
@@ -105,7 +105,7 @@ export default function AdminApartmentManagement() {
                                             <td className="px-5 py-4"><p className="font-semibold">{apartment.name}</p><p className="mt-1 max-w-md text-sm text-slate-500">{apartment.description}</p></td>
                                             <td className="px-5 py-4 text-sm text-slate-600">{apartment.street}, {apartment.town}</td>
                                             <td className="px-5 py-4"><span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusClasses[apartmentStatus] || statusClasses.Pending}`}>{apartmentStatus}</span>{apartment.rejected_reason && <p className="mt-2 max-w-xs text-xs text-red-600">{apartment.rejected_reason}</p>}</td>
-                                            <td className="px-5 py-4"><div className="flex items-center gap-2"><button type="button" onClick={() => updateStatus(apartment, "approve")} disabled={isBusy || apartmentStatus === "Approved"} className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" title="Approve apartment"><FiCheck /> Confirm</button><button type="button" onClick={() => updateStatus(apartment, "reject")} disabled={isBusy || apartmentStatus === "Rejected"} className="flex items-center gap-1 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" title="Reject apartment"><FiX /> Reject</button></div></td>
+                                            <td className="px-5 py-4"><div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => navigate(`/apartments/${apartment.id}`)} className="flex items-center gap-1 rounded-lg border border-blue-200 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50" title="Upload apartment media"><FiUploadCloud /> Media</button><button type="button" onClick={() => updateStatus(apartment, "approve")} disabled={isBusy || apartmentStatus === "Approved"} className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" title="Approve apartment"><FiCheck /> Confirm</button><button type="button" onClick={() => updateStatus(apartment, "reject")} disabled={isBusy || apartmentStatus === "Rejected"} className="flex items-center gap-1 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40" title="Reject apartment"><FiX /> Reject</button></div></td>
                                         </tr>
                                     );
                                 })}
