@@ -13,6 +13,7 @@ use App\Traits\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -60,5 +61,23 @@ class AuthController extends Controller
         $logoutUserAction->execute($request->user());
 
         return $this->successResponse(null, 'Logout successful.');
+    }
+
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $request->validate([
+            'profile_picture' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $user = $request->user();
+        if ($user->profile_picture) {
+            Storage::disk('public')->delete($user->profile_picture);
+        }
+
+        $user->update([
+            'profile_picture' => $request->file('profile_picture')->store('profile-pictures', 'public'),
+        ]);
+
+        return $this->successResponse(new UserResource($user->fresh()), 'Profile picture updated successfully.');
     }
 }

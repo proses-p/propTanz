@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import apartmentService from "../../services/apartmentService";
 import ApartmentForm from "../../components/apartment/ApartmentForm";
 
 export default function ApartmentEditor() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams();
+    const apartmentBasePath = location.pathname.startsWith("/admin/") ? "/admin/apartments" : "/apartments";
     const editing = Boolean(id);
     const [apartment, setApartment] = useState(null);
     const [loading, setLoading] = useState(editing);
@@ -50,7 +52,7 @@ export default function ApartmentEditor() {
                 }
             }
             toast.success(editing ? "Apartment updated successfully." : "Apartment created successfully.");
-            navigate(`/apartments/${savedId}`);
+            navigate(`${apartmentBasePath}/${savedId}`);
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to save apartment.");
             throw error;
@@ -64,7 +66,7 @@ export default function ApartmentEditor() {
     return (
         <div className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8 lg:py-12">
             <div className="mx-auto max-w-4xl">
-                <button type="button" onClick={() => navigate("/apartments")} className="mb-6 text-sm font-semibold text-blue-600 hover:underline">Back to apartments</button>
+                <button type="button" onClick={() => navigate(apartmentBasePath)} className="mb-6 text-sm font-semibold text-blue-600 hover:underline">Back to apartments</button>
                 <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                     <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-blue-600">{editing ? "Edit listing" : "New listing"}</p>
                     <h1 className="text-3xl font-bold text-slate-900">{editing ? "Edit apartment" : "Add apartment"}</h1>

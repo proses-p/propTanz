@@ -45,6 +45,9 @@ function App() {
             <Route path="owner-request" element={<OwnerRequests />} />
             <Route path="hostels/:id" element={<AdminHostelDetails />} />
             <Route path="apartments" element={<AdminApartmentManagement />} />
+            <Route path="apartments/create" element={<ApartmentEditor />} />
+            <Route path="apartments/:id" element={<ApartmentDetails />} />
+            <Route path="apartments/:id/edit" element={<ApartmentEditor />} />
           </Route>
           <Route path="*" element={<ProtectedRoute roles={[ROLE_USER]}><HostelRegistration /></ProtectedRoute>} />
         </Routes>

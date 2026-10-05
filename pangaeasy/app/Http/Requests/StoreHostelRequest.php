@@ -84,7 +84,11 @@ class StoreHostelRequest extends FormRequest
 
             'images.*' => [
                 'image',
+<<<<<<< HEAD
                 'mimes:jpeg,jpg,png,webp',
+=======
+                'mimes:jpg,jpeg,png,webp',
+>>>>>>> 4cae21189161ddf1f548d75206f438cfb485b804
                 'max:5120',
             ]
 

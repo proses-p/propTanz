@@ -34,7 +34,7 @@ export default function ApartmentForm({
         setErrors({});
 
         const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-        if ((!initialData || imageFiles.length > 0) && imageFiles.length < 2) {
+        if (!initialData && imageFiles.length < 2) {
             setErrors({ images: ["At least 2 images are required."] });
             return;
         }
